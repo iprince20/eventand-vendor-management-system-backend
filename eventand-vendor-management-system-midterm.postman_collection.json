@@ -1,0 +1,359 @@
+{
+  "info": {
+    "_postman_id": "a4e78482-04c2-4bd7-a2ac-4ee8f8e65baf",
+    "name": "Event and Vendor Management System Mid-Term",
+    "description": "Requests are named by requirement ID. Create parent data first and replace collection ID variables using IDs from the /all endpoints.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "A1 - Verify entities and relationships",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/service-types/all"
+      }
+    },
+    {
+      "name": "A2 - Save service type",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Catering\"\n}" },
+        "url": "{{baseUrl}}/api/service-types/save"
+      }
+    },
+    {
+      "name": "A2 - Save stall",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"stallNumber\": 1,\n  \"name\": \"Stall 1\"\n}" },
+        "url": "{{baseUrl}}/api/stalls/save"
+      }
+    },
+    {
+      "name": "A2 - Save vendor",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"vendorName\": \"Kigali Catering\",\n  \"contactPerson\": \"Alex\",\n  \"phone\": \"+250788000001\",\n  \"stall\": { \"id\": \"{{stallId}}\" },\n  \"serviceTypes\": [{ \"id\": \"{{serviceTypeId}}\" }]\n}" },
+        "url": "{{baseUrl}}/api/vendors/save"
+      }
+    },
+    {
+      "name": "A2 - Save organizer",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"firstName\": \"Aline\",\n  \"lastName\": \"Gatete\",\n  \"organizerCode\": \"ORG-021\",\n  \"phone\": \"+250788000002\",\n  \"email\": \"aline@example.com\"\n}" },
+        "url": "{{baseUrl}}/api/organizers/save"
+      }
+    },
+    {
+      "name": "A2 - Save event booking",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"eventDate\": \"2026-11-15\",\n  \"eventName\": \"Autumn reception\",\n  \"guests\": 100,\n  \"status\": \"DECLINED\",\n  \"organizer\": { \"id\": \"{{organizerId}}\" },\n  \"vendor\": { \"id\": \"{{vendorId}}\" }\n}" },
+        "url": "{{baseUrl}}/api/event-bookings/save"
+      }
+    },
+    {
+      "name": "A2 - List service types",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/service-types/all" }
+    },
+    {
+      "name": "A2 - List stalls",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/stalls/all" }
+    },
+    {
+      "name": "A2 - List vendors",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/vendors/all" }
+    },
+    {
+      "name": "A2 - List organizers",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/organizers/all" }
+    },
+    {
+      "name": "A2 - List event bookings",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/event-bookings/all" }
+    },
+    {
+      "name": "A2 - Get service type",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/service-types/{{serviceTypeId}}" }
+    },
+    {
+      "name": "A2 - Update service type",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Catering updated\"\n}" },
+        "url": "{{baseUrl}}/api/service-types/update/{{serviceTypeId}}"
+      }
+    },
+    {
+      "name": "A2 - Delete service type",
+      "request": { "method": "DELETE", "url": "{{baseUrl}}/api/service-types/delete/{{serviceTypeId}}" }
+    },
+    {
+      "name": "A2 - Get stall",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/stalls/{{stallId}}" }
+    },
+    {
+      "name": "A2 - Update stall",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"stallNumber\": 1,\n  \"name\": \"Stall 1 updated\"\n}" },
+        "url": "{{baseUrl}}/api/stalls/update/{{stallId}}"
+      }
+    },
+    {
+      "name": "A2 - Delete stall",
+      "request": { "method": "DELETE", "url": "{{baseUrl}}/api/stalls/delete/{{stallId}}" }
+    },
+    {
+      "name": "A2 - Get vendor",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/vendors/{{vendorId}}" }
+    },
+    {
+      "name": "A2 - Update vendor",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"vendorName\": \"Kigali Catering Updated\",\n  \"contactPerson\": \"Alex\",\n  \"phone\": \"+250788000001\",\n  \"stall\": { \"id\": \"{{stallId}}\" },\n  \"serviceTypes\": [{ \"id\": \"{{serviceTypeId}}\" }]\n}" },
+        "url": "{{baseUrl}}/api/vendors/update/{{vendorId}}"
+      }
+    },
+    {
+      "name": "A2 - Delete vendor",
+      "request": { "method": "DELETE", "url": "{{baseUrl}}/api/vendors/delete/{{vendorId}}" }
+    },
+    {
+      "name": "A2 - Get organizer",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/organizers/{{organizerId}}" }
+    },
+    {
+      "name": "A2 - Update organizer",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"firstName\": \"Aline\",\n  \"lastName\": \"Gatete\",\n  \"organizerCode\": \"ORG-021\",\n  \"phone\": \"+250788000002\",\n  \"email\": \"aline@example.com\"\n}" },
+        "url": "{{baseUrl}}/api/organizers/update/{{organizerId}}"
+      }
+    },
+    {
+      "name": "A2 - Delete organizer",
+      "request": { "method": "DELETE", "url": "{{baseUrl}}/api/organizers/delete/{{organizerId}}" }
+    },
+    {
+      "name": "A2 - Get event booking",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/event-bookings/{{eventBookingId}}" }
+    },
+    {
+      "name": "A2 - Update event booking",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"eventDate\": \"2026-11-15\",\n  \"eventName\": \"Autumn reception updated\",\n  \"guests\": 110,\n  \"status\": \"DECLINED\",\n  \"organizer\": { \"id\": \"{{organizerId}}\" },\n  \"vendor\": { \"id\": \"{{vendorId}}\" }\n}" },
+        "url": "{{baseUrl}}/api/event-bookings/update/{{eventBookingId}}"
+      }
+    },
+    {
+      "name": "A2 - Delete event booking",
+      "request": { "method": "DELETE", "url": "{{baseUrl}}/api/event-bookings/delete/{{eventBookingId}}" }
+    },
+    {
+      "name": "B1 - Organizers by last name",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/organizers/by-last-name?lastName=gatete"
+      }
+    },
+    {
+      "name": "B2 - Event bookings by status",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/event-bookings/by-status?status=REQUESTED"
+      }
+    },
+    {
+      "name": "B3 - Event bookings between dates",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/event-bookings/between?start=2026-10-01&end=2026-10-31"
+      }
+    },
+    {
+      "name": "C1 - Vendors by service type",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/vendors/by-service-type?name=cater"
+      }
+    },
+    {
+      "name": "C2 - Free stalls",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/stalls/free" }
+    },
+    {
+      "name": "C3 - Unused service types",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/service-types/unused" }
+    },
+    {
+      "name": "C4 - Organizers of a vendor",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/organizers/of-vendor/{{vendorId}}"
+      }
+    },
+    {
+      "name": "D1 - Safe event booking save",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"eventDate\": \"2026-11-30\",\n  \"eventName\": \"Safe-save demo\",\n  \"guests\": 50,\n  \"status\": \"DELIVERED\",\n  \"organizer\": { \"id\": \"{{organizerId}}\" },\n  \"vendor\": { \"id\": \"{{vendorId}}\" }\n}" },
+        "url": "{{baseUrl}}/api/event-bookings/save"
+      }
+    },
+    {
+      "name": "D1 - Reject past event date",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"eventDate\": \"2026-10-20\",\n  \"eventName\": \"Past-date rejection demo\",\n  \"guests\": 10,\n  \"organizer\": { \"id\": \"{{organizerId}}\" },\n  \"vendor\": { \"id\": \"{{vendorId}}\" }\n}" },
+        "url": "{{baseUrl}}/api/event-bookings/save"
+      }
+    },
+    {
+      "name": "D1 - Reject vendor date conflict",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"eventDate\": \"2026-10-25\",\n  \"eventName\": \"Duplicate-date rejection demo\",\n  \"guests\": 10,\n  \"organizer\": { \"id\": \"{{organizerId}}\" },\n  \"vendor\": { \"id\": \"{{soundHouseId}}\" }\n}" },
+        "url": "{{baseUrl}}/api/event-bookings/save"
+      }
+    },
+    {
+      "name": "D2 - Update event booking status",
+      "request": {
+        "method": "PATCH",
+        "url": "{{baseUrl}}/api/event-bookings/{{eventBookingId}}/status?status=ACCEPTED"
+      }
+    },
+    {
+      "name": "D2 - Reject transition from final status",
+      "request": {
+        "method": "PATCH",
+        "url": "{{baseUrl}}/api/event-bookings/{{deliveredBookingId}}/status?status=REQUESTED"
+      }
+    },
+    {
+      "name": "D3 - Add service type to vendor",
+      "request": {
+        "method": "PUT",
+        "url": "{{baseUrl}}/api/vendors/{{photoStudioId}}/service-types/{{soundAndLightingId}}"
+      }
+    },
+    {
+      "name": "D3 - Reject duplicate service type",
+      "request": {
+        "method": "PUT",
+        "url": "{{baseUrl}}/api/vendors/{{vendorId}}/service-types/{{serviceTypeId}}"
+      }
+    },
+    {
+      "name": "D4 - Move vendor to stall",
+      "request": {
+        "method": "PATCH",
+        "url": "{{baseUrl}}/api/vendors/{{vendorId}}/stall?stallNumber=4"
+      }
+    },
+    {
+      "name": "D4 - Reject taken stall",
+      "request": {
+        "method": "PATCH",
+        "url": "{{baseUrl}}/api/vendors/{{vendorId}}/stall?stallNumber=2"
+      }
+    },
+    {
+      "name": "E1 - Save vendor invoice",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"serviceName\": \"Buffet for 100 guests\",\n  \"notes\": \"Includes drinks\",\n  \"amount\": 1500000\n}" },
+        "url": "{{baseUrl}}/api/vendor-invoices/save?eventBookingId={{deliveredBookingId}}"
+      }
+    },
+    {
+      "name": "E1 - Reject invoice for non-delivered booking",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"serviceName\": \"Buffet\",\n  \"notes\": \"Validation demo\",\n  \"amount\": 1500000\n}" },
+        "url": "{{baseUrl}}/api/vendor-invoices/save?eventBookingId={{eventBookingId}}"
+      }
+    },
+    {
+      "name": "E2 - Invoice history by organizer",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/vendor-invoices/organizer/ORG-021"
+      }
+    },
+    {
+      "name": "E3 - Delete event booking",
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/api/event-bookings/delete/{{deliveredBookingId}}"
+      }
+    },
+    {
+      "name": "E3 - Delete vendor invoice",
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/api/vendor-invoices/delete/{{invoiceId}}"
+      }
+    },
+    {
+      "name": "F1 - Event booking counts by status",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/event-bookings/stats/by-status"
+      }
+    },
+    {
+      "name": "F2 - Cancel vendor bookings for a date",
+      "request": {
+        "method": "PATCH",
+        "url": "{{baseUrl}}/api/event-bookings/cancel-day?vendorId={{vendorId}}&date=2026-11-15"
+      }
+    },
+    {
+      "name": "Bonus - Dashboard summary",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/dashboard/summary"
+      }
+    },
+    {
+      "name": "Bonus - Paginated event bookings",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/event-bookings/page?page=0&size=5&sort=eventDate,desc"
+      }
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "serviceTypeId", "value": "REPLACE_WITH_SERVICE_TYPE_UUID" },
+    { "key": "soundAndLightingId", "value": "REPLACE_WITH_SERVICE_TYPE_UUID" },
+    { "key": "stallId", "value": "REPLACE_WITH_STALL_UUID" },
+    { "key": "vendorId", "value": "REPLACE_WITH_VENDOR_UUID" },
+    { "key": "soundHouseId", "value": "REPLACE_WITH_VENDOR_UUID" },
+    { "key": "photoStudioId", "value": "REPLACE_WITH_VENDOR_UUID" },
+    { "key": "organizerId", "value": "REPLACE_WITH_ORGANIZER_UUID" },
+    { "key": "eventBookingId", "value": "REPLACE_WITH_EVENT_BOOKING_UUID" },
+    { "key": "deliveredBookingId", "value": "REPLACE_WITH_DELIVERED_EVENT_BOOKING_UUID" },
+    { "key": "invoiceId", "value": "REPLACE_WITH_VENDOR_INVOICE_UUID" }
+  ]
+}
