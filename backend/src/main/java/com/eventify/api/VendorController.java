@@ -6,12 +6,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -66,5 +67,29 @@ public class VendorController {
     @GetMapping("/by-service-type")
     public List<Vendor> findByServiceType(@RequestParam String name) {
         return vendors.findByServiceType(name);
+    }
+
+    @PutMapping("/{vendorId}/service-types/{serviceTypeId}")
+    public ResponseEntity<String> addServiceType(@PathVariable UUID vendorId, @PathVariable UUID serviceTypeId) {
+        String message = vendors.addServiceType(vendorId, serviceTypeId);
+        if (message.equals("The vendor with that id does not exist")
+                || message.equals("That service type does not exist")) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+        } else if (message.equals("The vendor already has that service type")) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(message);
+        }
+        return ResponseEntity.ok(message);
+    }
+
+    @PatchMapping("/{vendorId}/stall")
+    public ResponseEntity<String> moveToStall(@PathVariable UUID vendorId, @RequestParam int stallNumber) {
+        String message = vendors.moveToStall(vendorId, stallNumber);
+        if (message.equals("The vendor with that id does not exist")
+                || message.equals("The stall with that stallNumber does not exist")) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+        } else if (message.equals("That stall is taken by another vendor")) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(message);
+        }
+        return ResponseEntity.ok(message);
     }
 }

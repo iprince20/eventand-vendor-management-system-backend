@@ -7,6 +7,7 @@ import com.eventify.repository.ServiceTypeRepository;
 import com.eventify.repository.StallRepository;
 import com.eventify.repository.VendorRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +61,51 @@ public class VendorService {
 
     public List<Vendor> findByServiceType(String name) {
         return vendors.findByServiceTypeName(name);
+    }
+
+    @Transactional
+    public String addServiceType(UUID vendorId, UUID serviceTypeId) {
+        Optional<Vendor> vendorResult = vendors.findById(vendorId);
+        if (vendorResult.isEmpty()) {
+            return "The vendor with that id does not exist";
+        }
+        Optional<ServiceType> serviceTypeResult = serviceTypes.findById(serviceTypeId);
+        if (serviceTypeResult.isEmpty()) {
+            return "That service type does not exist";
+        }
+
+        Vendor vendor = vendorResult.get();
+        ServiceType serviceType = serviceTypeResult.get();
+        if (vendor.getServiceTypes().contains(serviceType)) {
+            return "The vendor already has that service type";
+        }
+        vendor.getServiceTypes().add(serviceType);
+        vendors.save(vendor);
+        return "Service type added to the vendor";
+    }
+
+    @Transactional
+    public String moveToStall(UUID vendorId, int stallNumber) {
+        Optional<Vendor> vendorResult = vendors.findById(vendorId);
+        if (vendorResult.isEmpty()) {
+            return "The vendor with that id does not exist";
+        }
+        Optional<Stall> stallResult = stalls.findByStallNumber(stallNumber);
+        if (stallResult.isEmpty()) {
+            return "The stall with that stallNumber does not exist";
+        }
+
+        Vendor vendor = vendorResult.get();
+        Stall newStall = stallResult.get();
+        boolean alreadyOccupiedByAnotherVendor = vendors.existsByStall(newStall)
+                && (vendor.getStall() == null || !vendor.getStall().getId().equals(newStall.getId()));
+        if (alreadyOccupiedByAnotherVendor) {
+            return "That stall is taken by another vendor";
+        }
+
+        vendor.setStall(newStall);
+        vendors.save(vendor);
+        return "Stall changed successfully";
     }
     private void attachExistingRelations(Vendor vendor) {
         vendor.setStall(resolveStall(vendor.getStall()));

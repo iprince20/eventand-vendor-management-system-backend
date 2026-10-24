@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,7 +32,17 @@ public class EventBookingController {
     @PostMapping("/save")
     public ResponseEntity<String> save(@RequestBody EventBooking booking) {
         String message = eventBookings.save(booking);
-        return ResponseEntity.status(HttpStatus.CREATED).body(message);
+        if (message.equals("The vendor with that id does not exist")
+                || message.equals("The organizer with that id does not exist")) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+        } else if (message.equals("Event booking date cannot be in the past")) {
+            return ResponseEntity.badRequest().body(message);
+        } else if (message.equals("Vendor is already booked for an event on that date")) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(message);
+        } else if (message.equals("Event booking saved successfully")) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(message);
+        }
+        return ResponseEntity.badRequest().body(message);
     }
 
     @GetMapping("/all")
@@ -63,6 +74,17 @@ public class EventBookingController {
         String message = eventBookings.delete(id);
         if (message.equals("The event booking with that id does not exist")) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+        }
+        return ResponseEntity.ok(message);
+    }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<String> updateStatus(@PathVariable UUID id, @RequestParam BookingStatus status) {
+        String message = eventBookings.updateStatus(id, status);
+        if (message.equals("The event booking with that id does not exist")) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+        } else if (message.startsWith("Cannot change status from ")) {
+            return ResponseEntity.badRequest().body(message);
         }
         return ResponseEntity.ok(message);
     }

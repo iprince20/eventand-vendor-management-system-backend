@@ -9,6 +9,7 @@ import com.eventify.repository.OrganizerRepository;
 import com.eventify.repository.VendorRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -35,8 +36,31 @@ public class EventBookingService {
     }
 
     public String save(EventBooking booking) {
-        booking.setOrganizer(resolveOrganizer(booking.getOrganizer()));
-        booking.setVendor(resolveVendor(booking.getVendor()));
+        if (booking.getEventDate() != null && booking.getEventDate().isBefore(LocalDate.now())) {
+            return "Event booking date cannot be in the past";
+        }
+        if (booking.getVendor() == null || booking.getVendor().getId() == null) {
+            return "The vendor with that id does not exist";
+        }
+        Optional<Vendor> vendorResult = vendors.findById(booking.getVendor().getId());
+        if (vendorResult.isEmpty()) {
+            return "The vendor with that id does not exist";
+        }
+        if (booking.getOrganizer() == null || booking.getOrganizer().getId() == null) {
+            return "The organizer with that id does not exist";
+        }
+        Optional<Organizer> organizerResult = organizers.findById(booking.getOrganizer().getId());
+        if (organizerResult.isEmpty()) {
+            return "The organizer with that id does not exist";
+        }
+        Vendor vendor = vendorResult.get();
+        if (booking.getEventDate() != null
+                && eventBookings.existsByVendorAndEventDateAndStatusNot(vendor, booking.getEventDate(), BookingStatus.DECLINED)) {
+            return "Vendor is already booked for an event on that date";
+        }
+        booking.setVendor(vendor);
+        booking.setOrganizer(organizerResult.get());
+        booking.setStatus(BookingStatus.REQUESTED);
         eventBookings.save(booking);
         return "Event booking saved successfully";
     }
@@ -51,7 +75,6 @@ public class EventBookingService {
         existing.setEventDate(input.getEventDate());
         existing.setEventName(input.getEventName());
         existing.setGuests(input.getGuests());
-        existing.setStatus(input.getStatus());
         existing.setOrganizer(resolveOrganizer(input.getOrganizer()));
         existing.setVendor(resolveVendor(input.getVendor()));
         eventBookings.save(existing);
@@ -71,6 +94,26 @@ public class EventBookingService {
 
     public List<EventBooking> findBetween(java.time.LocalDate start, java.time.LocalDate end) {
         return eventBookings.findByEventDateBetweenOrderByEventDateAsc(start, end);
+    }
+
+    public String updateStatus(UUID id, BookingStatus newStatus) {
+        Optional<EventBooking> bookingResult = eventBookings.findById(id);
+        if (bookingResult.isEmpty()) {
+            return "The event booking with that id does not exist";
+        }
+
+        EventBooking booking = bookingResult.get();
+        BookingStatus currentStatus = booking.getStatus();
+        boolean allowed = currentStatus == BookingStatus.REQUESTED
+                && (newStatus == BookingStatus.ACCEPTED || newStatus == BookingStatus.DECLINED)
+                || currentStatus == BookingStatus.ACCEPTED
+                && (newStatus == BookingStatus.DELIVERED || newStatus == BookingStatus.DECLINED);
+        if (!allowed) {
+            return "Cannot change status from " + currentStatus + " to " + newStatus;
+        }
+        booking.setStatus(newStatus);
+        eventBookings.save(booking);
+        return "Event booking status updated successfully";
     }
 
     private Organizer resolveOrganizer(Organizer input) {
