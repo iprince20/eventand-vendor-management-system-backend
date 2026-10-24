@@ -6,6 +6,7 @@ import com.eventify.model.Organizer;
 import com.eventify.model.Vendor;
 import com.eventify.repository.EventBookingRepository;
 import com.eventify.repository.OrganizerRepository;
+import com.eventify.repository.VendorInvoiceRepository;
 import com.eventify.repository.VendorRepository;
 import org.springframework.stereotype.Service;
 
@@ -19,12 +20,14 @@ public class EventBookingService {
     private final EventBookingRepository eventBookings;
     private final OrganizerRepository organizers;
     private final VendorRepository vendors;
+    private final VendorInvoiceRepository invoices;
 
     public EventBookingService(EventBookingRepository eventBookings, OrganizerRepository organizers,
-                               VendorRepository vendors) {
+                               VendorRepository vendors, VendorInvoiceRepository invoices) {
         this.eventBookings = eventBookings;
         this.organizers = organizers;
         this.vendors = vendors;
+        this.invoices = invoices;
     }
 
     public List<EventBooking> getAll() {
@@ -82,10 +85,15 @@ public class EventBookingService {
     }
 
     public String delete(UUID id) {
-        return eventBookings.findById(id).map(existing -> {
-            eventBookings.delete(existing);
-            return "Event booking deleted successfully";
-        }).orElse("The event booking with that id does not exist");
+        Optional<EventBooking> bookingResult = eventBookings.findById(id);
+        if (bookingResult.isEmpty()) {
+            return "The event booking with that id does not exist";
+        }
+        if (invoices.existsByEventBooking(bookingResult.get())) {
+            return "That event booking has vendor invoices, delete them first";
+        }
+        eventBookings.delete(bookingResult.get());
+        return "Event booking deleted successfully";
     }
 
     public List<EventBooking> findByStatus(BookingStatus status) {

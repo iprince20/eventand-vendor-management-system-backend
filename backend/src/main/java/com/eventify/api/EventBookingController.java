@@ -74,6 +74,8 @@ public class EventBookingController {
         String message = eventBookings.delete(id);
         if (message.equals("The event booking with that id does not exist")) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+        } else if (message.equals("That event booking has vendor invoices, delete them first")) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(message);
         }
         return ResponseEntity.ok(message);
     }
