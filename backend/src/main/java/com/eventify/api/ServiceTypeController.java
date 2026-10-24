@@ -62,4 +62,9 @@ public class ServiceTypeController {
         }
         return ResponseEntity.ok(message);
     }
+
+    @GetMapping("/unused")
+    public List<ServiceType> findUnused() {
+        return serviceTypes.findUnused();
+    }
 }

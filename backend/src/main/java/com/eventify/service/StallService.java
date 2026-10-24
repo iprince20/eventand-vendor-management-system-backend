@@ -44,4 +44,8 @@ public class StallService {
             return "Stall deleted successfully";
         }).orElse("The stall with that id does not exist");
     }
+
+    public List<Stall> findFree() {
+        return stalls.findFreeStalls();
+    }
 }

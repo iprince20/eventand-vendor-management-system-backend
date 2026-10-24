@@ -67,4 +67,14 @@ public class OrganizerController {
     public List<Organizer> findByLastName(@RequestParam String lastName) {
         return organizers.findByLastName(lastName);
     }
+
+    @GetMapping("/of-vendor/{vendorId}")
+    public ResponseEntity<?> findByVendor(@PathVariable UUID vendorId) {
+        var result = organizers.findByVendor(vendorId);
+        if (result.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("The vendor with that id does not exist");
+        }
+        return ResponseEntity.ok(result.get());
+    }
 }

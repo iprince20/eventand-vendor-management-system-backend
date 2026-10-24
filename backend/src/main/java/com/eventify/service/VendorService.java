@@ -57,6 +57,10 @@ public class VendorService {
             return "Vendor deleted successfully";
         }).orElse("The vendor with that id does not exist");
     }
+
+    public List<Vendor> findByServiceType(String name) {
+        return vendors.findByServiceTypeName(name);
+    }
     private void attachExistingRelations(Vendor vendor) {
         vendor.setStall(resolveStall(vendor.getStall()));
         vendor.setServiceTypes(resolveServiceTypes(vendor.getServiceTypes()));

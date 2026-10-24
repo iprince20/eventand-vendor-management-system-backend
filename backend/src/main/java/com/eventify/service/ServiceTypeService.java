@@ -43,4 +43,8 @@ public class ServiceTypeService {
             return "Service type deleted successfully";
         }).orElse("The service type with that id does not exist");
     }
+
+    public List<ServiceType> findUnused() {
+        return serviceTypes.findUnusedServiceTypes();
+    }
 }

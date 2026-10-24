@@ -2,6 +2,7 @@ package com.eventify.service;
 
 import com.eventify.model.Organizer;
 import com.eventify.repository.OrganizerRepository;
+import com.eventify.repository.VendorRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,9 +12,11 @@ import java.util.UUID;
 @Service
 public class OrganizerService {
     private final OrganizerRepository organizers;
+    private final VendorRepository vendors;
 
-    public OrganizerService(OrganizerRepository organizers) {
+    public OrganizerService(OrganizerRepository organizers, VendorRepository vendors) {
         this.organizers = organizers;
+        this.vendors = vendors;
     }
 
     public List<Organizer> getAll() {
@@ -50,5 +53,12 @@ public class OrganizerService {
 
     public List<Organizer> findByLastName(String lastName) {
         return organizers.findByLastNameIgnoreCaseOrderByFirstNameAsc(lastName);
+    }
+
+    public Optional<List<Organizer>> findByVendor(UUID vendorId) {
+        if (!vendors.existsById(vendorId)) {
+            return Optional.empty();
+        }
+        return Optional.of(organizers.findDistinctOrganizersByVendorId(vendorId));
     }
 }

@@ -61,4 +61,9 @@ public class StallController {
         }
         return ResponseEntity.ok(message);
     }
+
+    @GetMapping("/free")
+    public List<Stall> findFree() {
+        return stalls.findFree();
+    }
 }
