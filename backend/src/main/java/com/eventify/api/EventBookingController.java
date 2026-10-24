@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -88,6 +89,17 @@ public class EventBookingController {
         } else if (message.startsWith("Cannot change status from ")) {
             return ResponseEntity.badRequest().body(message);
         }
+        return ResponseEntity.ok(message);
+    }
+
+    @GetMapping("/stats/by-status")
+    public List<Object[]> statsByStatus() {
+        return eventBookings.statsByStatus();
+    }
+
+    @PatchMapping("/cancel-day")
+    public ResponseEntity<String> cancelDay(@RequestParam UUID vendorId, @RequestParam String date) {
+        String message = eventBookings.cancelDay(vendorId, LocalDate.parse(date));
         return ResponseEntity.ok(message);
     }
 

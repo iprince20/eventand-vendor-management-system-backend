@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class EventBookingService {
@@ -122,6 +123,17 @@ public class EventBookingService {
         booking.setStatus(newStatus);
         eventBookings.save(booking);
         return "Event booking status updated successfully";
+    }
+
+    public List<Object[]> statsByStatus() {
+        return eventBookings.countBookingsByStatus();
+    }
+
+    @Transactional
+    public String cancelDay(UUID vendorId, LocalDate date) {
+        int cancelled = eventBookings.declineBookingsForVendorAndDate(
+                vendorId, date, BookingStatus.DECLINED, BookingStatus.DELIVERED);
+        return cancelled + " event bookings cancelled";
     }
 
     private Organizer resolveOrganizer(Organizer input) {
