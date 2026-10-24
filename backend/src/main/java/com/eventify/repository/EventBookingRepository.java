@@ -4,6 +4,8 @@ import com.eventify.model.BookingStatus;
 import com.eventify.model.EventBooking;
 import com.eventify.model.Vendor;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,6 +22,12 @@ public interface EventBookingRepository extends JpaRepository<EventBooking, UUID
     List<EventBooking> findByStatusOrderByEventDateAsc(BookingStatus status);
 
     List<EventBooking> findByEventDateBetweenOrderByEventDateAsc(LocalDate start, LocalDate end);
+
+    long countByStatus(BookingStatus status);
+
+    long countByEventDate(LocalDate eventDate);
+
+    Page<EventBooking> findAll(Pageable pageable);
 
     @Query("SELECT e.status, COUNT(e) FROM EventBooking e GROUP BY e.status")
     List<Object[]> countBookingsByStatus();

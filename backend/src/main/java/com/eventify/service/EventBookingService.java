@@ -8,6 +8,8 @@ import com.eventify.repository.EventBookingRepository;
 import com.eventify.repository.OrganizerRepository;
 import com.eventify.repository.VendorInvoiceRepository;
 import com.eventify.repository.VendorRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -134,6 +136,18 @@ public class EventBookingService {
         int cancelled = eventBookings.declineBookingsForVendorAndDate(
                 vendorId, date, BookingStatus.DECLINED, BookingStatus.DELIVERED);
         return cancelled + " event bookings cancelled";
+    }
+
+    public Page<EventBooking> getPage(Pageable pageable) {
+        return eventBookings.findAll(pageable);
+    }
+
+    public long countByStatus(BookingStatus status) {
+        return eventBookings.countByStatus(status);
+    }
+
+    public long countByDate(LocalDate date) {
+        return eventBookings.countByEventDate(date);
     }
 
     private Organizer resolveOrganizer(Organizer input) {

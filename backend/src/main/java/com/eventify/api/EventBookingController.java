@@ -3,6 +3,9 @@ package com.eventify.api;
 import com.eventify.model.BookingStatus;
 import com.eventify.model.EventBooking;
 import com.eventify.service.EventBookingService;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -101,6 +104,19 @@ public class EventBookingController {
     public ResponseEntity<String> cancelDay(@RequestParam UUID vendorId, @RequestParam String date) {
         String message = eventBookings.cancelDay(vendorId, LocalDate.parse(date));
         return ResponseEntity.ok(message);
+    }
+
+    @GetMapping("/page")
+    public org.springframework.data.domain.Page<EventBooking> getPage(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "eventDate,desc") String sort) {
+        String[] sortOptions = sort.split(",", 2);
+        Sort.Direction direction = sortOptions.length == 2
+                ? Sort.Direction.fromString(sortOptions[1])
+                : Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortOptions[0]));
+        return eventBookings.getPage(pageable);
     }
 
     @GetMapping("/by-status")
