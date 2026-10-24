@@ -1,6 +1,7 @@
 package com.eventify.service;
 
 import com.eventify.model.EventBooking;
+import com.eventify.model.BookingStatus;
 import com.eventify.model.Organizer;
 import com.eventify.model.Vendor;
 import com.eventify.repository.EventBookingRepository;
@@ -62,6 +63,14 @@ public class EventBookingService {
             eventBookings.delete(existing);
             return "Event booking deleted successfully";
         }).orElse("The event booking with that id does not exist");
+    }
+
+    public List<EventBooking> findByStatus(BookingStatus status) {
+        return eventBookings.findByStatusOrderByEventDateAsc(status);
+    }
+
+    public List<EventBooking> findBetween(java.time.LocalDate start, java.time.LocalDate end) {
+        return eventBookings.findByEventDateBetweenOrderByEventDateAsc(start, end);
     }
 
     private Organizer resolveOrganizer(Organizer input) {

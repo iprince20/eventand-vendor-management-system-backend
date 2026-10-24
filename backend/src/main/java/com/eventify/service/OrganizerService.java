@@ -47,4 +47,8 @@ public class OrganizerService {
             return "Organizer deleted successfully";
         }).orElse("The organizer with that id does not exist");
     }
+
+    public List<Organizer> findByLastName(String lastName) {
+        return organizers.findByLastNameIgnoreCaseOrderByFirstNameAsc(lastName);
+    }
 }

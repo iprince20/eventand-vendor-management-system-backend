@@ -1,5 +1,6 @@
 package com.eventify.api;
 
+import com.eventify.model.BookingStatus;
 import com.eventify.model.EventBooking;
 import com.eventify.service.EventBookingService;
 import org.springframework.http.HttpStatus;
@@ -11,9 +12,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @RestController
@@ -62,5 +65,15 @@ public class EventBookingController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
         }
         return ResponseEntity.ok(message);
+    }
+
+    @GetMapping("/by-status")
+    public List<EventBooking> findByStatus(@RequestParam BookingStatus status) {
+        return eventBookings.findByStatus(status);
+    }
+
+    @GetMapping("/between")
+    public List<EventBooking> findBetween(@RequestParam String start, @RequestParam String end) {
+        return eventBookings.findBetween(LocalDate.parse(start), LocalDate.parse(end));
     }
 }
